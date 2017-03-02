@@ -8,13 +8,13 @@
 
 import UIKit
 
-class CompetitionTableViewCell: UITableViewCell {
+class CompetitionCell: UITableViewCell {
 
     @IBOutlet weak var titleImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var begginerButton: UIButton!
-    @IBOutlet weak var intermediateButton: UIButton!
-    @IBOutlet weak var expertButton: UIButton!
+    @IBOutlet weak var easyButton: UIButton!
+    @IBOutlet weak var mediumButton: UIButton!
+    @IBOutlet weak var hardButton: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()

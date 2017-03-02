@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Fabric
+import Crashlytics
 
 class Session {
     static let instance = Session()
@@ -32,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "LoginController")
         }
         
-        
+        Fabric.with([Crashlytics.self])
         return true
     }
 

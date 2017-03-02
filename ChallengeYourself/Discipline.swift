@@ -10,15 +10,21 @@ import Foundation
 
 class Discipline {
     
-    private var disciplineName: String
-    private var disciplineIconUrl: String
-    private var disciplineColor: String
-    private var disciplineDifficulties: NSDictionary
+    var id: Int
+    var name: String
+    var iconUrl: String
+    var color: String
+    var easyDifficulty: Int
+    var mediumDifficulty: Int
+    var hardDifficulty: Int
     
-    init(disciplineName: String, disciplineIconUrl: String, disciplineColor: String, disciplineDifficulties: NSDictionary) {
-        self.disciplineName = disciplineName
-        self.disciplineIconUrl = disciplineIconUrl
-        self.disciplineColor = disciplineColor
-        self.disciplineDifficulties = disciplineDifficulties
+    init(id: Int, name: String, iconUrl: String, color: String, easyDifficulty: Int, mediumDifficulty: Int, hardDifficulty: Int) {
+        self.id = id
+        self.name = name
+        self.iconUrl = iconUrl
+        self.color = color
+        self.easyDifficulty = easyDifficulty
+        self.mediumDifficulty = mediumDifficulty
+        self.hardDifficulty = hardDifficulty
     }
 }

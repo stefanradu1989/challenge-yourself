@@ -6,6 +6,7 @@
 //  Copyright © 2017 Endava. All rights reserved.
 //
 import Alamofire
+import AlamofireImage
 import SwiftyJSON
 
 class NetworkAssistant {
@@ -60,5 +61,9 @@ class NetworkAssistant {
             }
         }
     }
+    
+//    func getPhoto(imageurl: String) {
+//        Alamofire.request(imageurl).responseImage(completionHandler: <#T##(DataResponse<Image>) -> Void#>)
+//    }
 }
 

@@ -13,11 +13,18 @@ protocol CompetitionTitleDelegate: class {
     
 }
 
-class CompetitionTableViewController: UITableViewController, DatamanagerListener, CompetitionTitleDelegate {
+class CompetitionController: UIViewController, UITableViewDelegate, UITableViewDataSource, DatamanagerListener, CompetitionTitleDelegate {
     @IBOutlet weak var startButton: UIBarButtonItem!
+    
+    @IBOutlet weak var tableView: UITableView!
+    
+    let disciplinesArray: [Discipline] = DataManager.instance.disciplineList
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -44,23 +51,29 @@ class CompetitionTableViewController: UITableViewController, DatamanagerListener
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 4
+        return DataManager.instance.disciplineCount
     }
 
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CompetitionCell", for: indexPath) as! CompetitionTableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CompetitionCell", for: indexPath) as! CompetitionCell
         
         // Configure the cell...
+        let discipline = DataManager.instance.disciplineList[indexPath.row]
+        let disciplineColor = ColorUtils.hexStringToUIColor(hex: discipline.color)
+        
         cell.selectionStyle = UITableViewCellSelectionStyle.none
-        cell.titleLabel.text = "Category at \(indexPath.row)"
+        cell.titleLabel.textColor = disciplineColor
+        cell.titleLabel.text = discipline.name
+        
         return cell
     }
  
@@ -114,7 +127,7 @@ class CompetitionTableViewController: UITableViewController, DatamanagerListener
     
     var lastClickedCell = 0
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Did tap at \(indexPath.section), \(indexPath.row)")
         
         lastClickedCell = indexPath.row
