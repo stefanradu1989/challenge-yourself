@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main);
         
+        Session.instance.userEmail = "test"
+        
         if (Session.instance.userEmail != nil) {
             self.window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "HomeController")
         } else {

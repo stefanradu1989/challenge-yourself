@@ -11,8 +11,9 @@ import SwiftyJSON
 
 class ParseUtils {
     
+    // MARK: - Disciplines
+    
     static var disciplinesArray: [Discipline] = []
-    static var disciplinesDictionary: Dictionary<Int, Discipline> = [Int: Discipline]()
     
     static func parseDisciplinesList(disciplines: [AnyObject]) -> [Discipline] {
         
@@ -22,7 +23,7 @@ class ParseUtils {
             
             var disciplineItem: Discipline
             
-            if disciplinesDictionary[discipline["disciplineId"].intValue] == nil {
+            if DataManager.instance.disciplinesDictionary[discipline["disciplineId"].intValue] == nil {
                 
                 disciplineItem = Discipline(id: discipline["disciplineId"].intValue, name: discipline["disciplineName"].stringValue, iconUrl: discipline["disciplineIcon"].stringValue, color: discipline["disciplineColor"].stringValue, easyDifficulty: 0, mediumDifficulty: 0, hardDifficulty: 0)
                 
@@ -40,7 +41,7 @@ class ParseUtils {
                     break
                 }
             } else {
-                disciplineItem = disciplinesDictionary[discipline["disciplineId"].intValue]!
+                disciplineItem = DataManager.instance.disciplinesDictionary[discipline["disciplineId"].intValue]!
                 
                 switch discipline["difficulty"].stringValue {
                 case "easy":
@@ -56,17 +57,39 @@ class ParseUtils {
                     break
                 }
             }
-            disciplinesDictionary[discipline["disciplineId"].intValue] = disciplineItem
+            DataManager.instance.disciplinesDictionary[discipline["disciplineId"].intValue] = disciplineItem
         }
         
-        transformDictionaryIntoArray()
+        transformDisciplineDictionaryIntoArray()
         
         return disciplinesArray
     }
     
-    static func transformDictionaryIntoArray() {
-        for (_, discipline) in disciplinesDictionary {
+    static func transformDisciplineDictionaryIntoArray() {
+        disciplinesArray.removeAll()
+        
+        for (_, discipline) in DataManager.instance.disciplinesDictionary {
             disciplinesArray.append(discipline)
         }
+    }
+    
+    // MARK: - Leaderboard Users
+    
+    static var leaderboardUsersArray: [LeaderboardUser] = []
+    
+    static func parseLeaderboardUsersList(leaderboardUsers: [AnyObject]) -> [LeaderboardUser] {
+        
+        leaderboardUsersArray.removeAll()
+        
+        for leaderboardUserJson in leaderboardUsers {
+            let leaderboardUser = JSON(leaderboardUserJson)
+            print("[ParseUtils] leaderboardUser: \(leaderboardUser)")
+            
+            let leaderboardUserItem: LeaderboardUser = LeaderboardUser(id: leaderboardUser["id"].intValue, name: leaderboardUser["name"].stringValue, email: leaderboardUser["email"].stringValue, rank: leaderboardUser["rank"].intValue, score: leaderboardUser["score"].floatValue, iconUrl: leaderboardUser["icon"].stringValue)
+            
+            leaderboardUsersArray.append(leaderboardUserItem)
+        }
+        
+        return leaderboardUsersArray
     }
 }

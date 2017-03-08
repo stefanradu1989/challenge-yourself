@@ -14,11 +14,9 @@ protocol CompetitionTitleDelegate: class {
 }
 
 class CompetitionController: UIViewController, UITableViewDelegate, UITableViewDataSource, DatamanagerListener, CompetitionTitleDelegate {
-    @IBOutlet weak var startButton: UIBarButtonItem!
     
+    @IBOutlet weak var startCompetitionButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
-    
-    let disciplinesArray: [Discipline] = DataManager.instance.disciplineList
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,15 +26,18 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-
+        
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         DataManager.instance.addListener(listener: self)
         NetworkAssistant.instance.getDisciplines()
+        
+        startCompetitionButton.isEnabled = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -73,6 +74,10 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
         cell.selectionStyle = UITableViewCellSelectionStyle.none
         cell.titleLabel.textColor = disciplineColor
         cell.titleLabel.text = discipline.name
+        cell.titleImage.image = DataManager.instance.getDisciplineIcon(id: discipline.id, imageUrl: discipline.iconUrl)
+        
+        cell.setButtonsTextColor(color: disciplineColor)
+        cell.setButtonsBackgroundColor(color: disciplineColor)
         
         return cell
     }
@@ -137,9 +142,33 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
         return "\(lastClickedCell)"
     }
     
-    // MARK: - DataManager Listener
+    // MARK: - DataManagerListener
     
     func didReceiveDisciplines() {
         tableView.reloadData()
+    }
+    
+    func didLoadDisciplineIcon(disciplineId: Int) {
+        print("[CompetitionController] didLoadDisciplineIcon for id: \(disciplineId)")
+        let disciplinesArray = DataManager.instance.disciplineList
+        for (index, item) in disciplinesArray.enumerated() {
+            if disciplineId == item.id {
+                let indexPaths = tableView.indexPathsForVisibleRows
+                for ip in indexPaths! {
+                    if ip.row == index {
+                        tableView.reloadRows(at: [ip], with: .automatic)
+                        return
+                    }
+                }
+            }
+        }
+    }
+    
+    func didReceiveLeaderboardUsers() {
+        
+    }
+    
+    func didLoadLeaderboardUserIcon(leaderboardUserId: Int) {
+        
     }
 }

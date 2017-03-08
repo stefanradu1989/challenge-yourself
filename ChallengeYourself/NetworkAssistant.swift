@@ -8,6 +8,7 @@
 import Alamofire
 import AlamofireImage
 import SwiftyJSON
+import UIKit
 
 class NetworkAssistant {
     
@@ -15,6 +16,9 @@ class NetworkAssistant {
     private init() {}
     
     private let base_url = "https://challenge-yourself-carparked.c9users.io"
+    
+    // MARK: - Login
+    
     private let login_path = "/users/login"
     
     
@@ -41,6 +45,8 @@ class NetworkAssistant {
         }
     }
     
+    // MARK: - Competition
+    
     private let discipline_path = "/discipline/getPrerequisites"
     
     func getDisciplines() { //completionHandler: @escaping (NSDictionary?, Error?) -> ()) {
@@ -62,8 +68,41 @@ class NetworkAssistant {
         }
     }
     
-//    func getPhoto(imageurl: String) {
-//        Alamofire.request(imageurl).responseImage(completionHandler: <#T##(DataResponse<Image>) -> Void#>)
-//    }
+    // MARK: - Leaderboard
+    
+    private let leaderboard_path = "/users/getAllUsers"
+    
+    func getLeaderboardUsers() {
+        leaderboardUsersCall()
+    }
+    
+    func leaderboardUsersCall() {
+        let leaderboard_url = NetworkAssistant.instance.base_url + NetworkAssistant.instance.leaderboard_path
+        
+        Alamofire.request(leaderboard_url).responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                DataManager.instance.insertLeaderboardUsers(leaderboardUsers: value as! [AnyObject])
+            //completionHandler(value as? NSDictionary, nil)
+            case .failure(let error):
+                print("Error while making disciplines request \n Error: \(error.localizedDescription)")
+                //completionHandler(nil, error)
+            }
+        }
+    }
+    
+    // MARK: - Photos
+    
+    func getPhoto(imageurl: String, completionHandler: @escaping (UIImage?, Error?) -> ()) {
+        
+        Alamofire.request(imageurl).responseImage { response in
+            switch response.result{
+            case .success(let value):
+                completionHandler(value, nil)
+            case .failure(let error):
+                completionHandler(nil, error)
+            }
+        }
+    }
 }
 

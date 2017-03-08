@@ -13,6 +13,8 @@
 		9829FE071E5B365A00632E08 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9829FE061E5B365A00632E08 /* DataManager.swift */; };
 		9829FE0A1E5B3BF000632E08 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9829FE091E5B3BF000632E08 /* CacheManager.swift */; };
 		9829FE0E1E5C288D00632E08 /* ParseUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9829FE0D1E5C288D00632E08 /* ParseUtils.swift */; };
+		98555A0E1E696F7E002D430A /* LeaderboardUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98555A0D1E696F7E002D430A /* LeaderboardUser.swift */; };
+		98555A101E6975B2002D430A /* LeaderboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98555A0F1E6975B2002D430A /* LeaderboardCell.swift */; };
 		985C3B081E4B5C85003179A4 /* CompetitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C3B071E4B5C85003179A4 /* CompetitionController.swift */; };
 		985C3B0C1E4B6037003179A4 /* CompetitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C3B0B1E4B6037003179A4 /* CompetitionCell.swift */; };
 		985C3B131E5300CD003179A4 /* NetworkAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 985C3B121E5300CD003179A4 /* NetworkAssistant.swift */; };
@@ -58,6 +60,8 @@
 		9829FE061E5B365A00632E08 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		9829FE091E5B3BF000632E08 /* CacheManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		9829FE0D1E5C288D00632E08 /* ParseUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseUtils.swift; sourceTree = "<group>"; };
+		98555A0D1E696F7E002D430A /* LeaderboardUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderboardUser.swift; sourceTree = "<group>"; };
+		98555A0F1E6975B2002D430A /* LeaderboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderboardCell.swift; sourceTree = "<group>"; };
 		985C3B071E4B5C85003179A4 /* CompetitionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitionController.swift; sourceTree = "<group>"; };
 		985C3B0B1E4B6037003179A4 /* CompetitionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompetitionCell.swift; sourceTree = "<group>"; };
 		985C3B121E5300CD003179A4 /* NetworkAssistant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkAssistant.swift; sourceTree = "<group>"; };
@@ -228,6 +232,8 @@
 			isa = PBXGroup;
 			children = (
 				98ECF3B91E642D3600ACB56D /* LeaderboardViewController.swift */,
+				98555A0D1E696F7E002D430A /* LeaderboardUser.swift */,
+				98555A0F1E6975B2002D430A /* LeaderboardCell.swift */,
 			);
 			name = Leaderboard;
 			sourceTree = "<group>";
@@ -560,6 +566,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98555A0E1E696F7E002D430A /* LeaderboardUser.swift in Sources */,
+				98555A101E6975B2002D430A /* LeaderboardCell.swift in Sources */,
 				98ECF3C11E65CEC700ACB56D /* ColorUtils.swift in Sources */,
 				986DF2111E486BD900DE6335 /* LoginController.swift in Sources */,
 				9829FE0A1E5B3BF000632E08 /* CacheManager.swift in Sources */,
@@ -743,7 +751,7 @@
 			baseConfigurationReference = A2FB1FEEA431D6A57E04819B /* Pods-ChallengeYourself.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2354U295GD;
 				INFOPLIST_FILE = ChallengeYourself/Info.plist;

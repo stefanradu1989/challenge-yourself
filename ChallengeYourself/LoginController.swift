@@ -66,6 +66,7 @@ class LoginController: UIViewController {
                 self.loginButton.isHidden = false
             }
         }
+
     }
 }
 
