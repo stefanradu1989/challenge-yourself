@@ -8,14 +8,19 @@
 
 import UIKit
 
+@objc
 protocol DatamanagerListener:class {
-    func didReceiveDisciplines()
+    @objc optional func didReceiveUserDetails()
     
-    func didLoadDisciplineIcon(disciplineId: Int)
+    @objc optional func didReceiveDisciplines()
     
-    func didReceiveLeaderboardUsers()
+    @objc optional func didLoadDisciplineIcon(disciplineId: Int)
     
-    func didLoadLeaderboardUserIcon(leaderboardUserId: Int)
+    @objc optional func didReceiveLeaderboardUsers()
+    
+    @objc optional func didLoadLeaderboardUserIcon(leaderboardUserId: Int)
+    
+    @objc optional func didReceiveQuestion()
 }
 
 class DataManager {
@@ -41,6 +46,22 @@ class DataManager {
         }
     }
     
+    // MARK: - User Details
+    
+    private var user: UserDetails? = nil
+    
+    func insertUser(userResponse: Dictionary<String, Any>) {
+        user = ParseUtils.parseUserDetails(userDetailsJson: userResponse)
+        
+        for i in (0..<listeners.count) {
+            listeners[i].didReceiveUserDetails?()
+        }
+    }
+    
+    func getCurrentUser() -> UserDetails {
+        return user!
+    }
+    
     // MARK: - Discipline
     
     var disciplineList: [Discipline] = []
@@ -52,7 +73,7 @@ class DataManager {
         disciplineCount = disciplineList.count
         
         for i in (0..<listeners.count) {
-            listeners[i].didReceiveDisciplines()
+            listeners[i].didReceiveDisciplines?()
         }
     }
     
@@ -67,7 +88,7 @@ class DataManager {
                 CacheManager.instance.insertDisciplineIcon(id: id, image: responseObject!)
                 
                 for i in (0..<self.listeners.count) {
-                    self.listeners[i].didLoadDisciplineIcon(disciplineId: id)
+                    self.listeners[i].didLoadDisciplineIcon?(disciplineId: id)
                 }
                 
                 print("Image saved in cache")
@@ -76,6 +97,16 @@ class DataManager {
             }
         }
         return nil
+    }
+    
+    func getDisciplineColor(id: Int) -> String {
+        var color: String = ""
+        for item in disciplineList {
+            if item.id == id{
+                color = item.color
+            }
+        }
+        return color
     }
     
     // MARK: - Leaderboard Users
@@ -88,7 +119,7 @@ class DataManager {
         leaderboardUsersCount = leaderboardUsersList.count
         
         for i in (0..<listeners.count) {
-            listeners[i].didReceiveLeaderboardUsers()
+            listeners[i].didReceiveLeaderboardUsers?()
         }
     }
     
@@ -112,16 +143,38 @@ class DataManager {
             responseObject, error in
             if responseObject != nil {
                 CacheManager.instance.insertleaderboardUserIcon(id: id, image: responseObject!)
-                
                 for i in (0..<self.listeners.count) {
-                    self.listeners[i].didLoadLeaderboardUserIcon(leaderboardUserId: id)
+                    self.listeners[i].didLoadLeaderboardUserIcon?(leaderboardUserId: id)
                 }
-                
                 print("Image saved in cache")
             } else {
                 print("responseObject is nil \n error: \(error.debugDescription)")
             }
         }
         return nil
+    }
+    
+    // MARK: - Question
+    
+    var currentQuestion: Question? = nil
+    
+    func insertNewQuestion(questionResponse: [String : Any]) {
+        currentQuestion = ParseUtils.parseQuestion(questionResponse: questionResponse)
+        
+        for i in (0..<listeners.count) {
+            listeners[i].didReceiveQuestion?()
+        }
+    }
+    
+    func getQuestion() -> Question? {
+        return currentQuestion
+    }
+    
+    func getAnswersCount() -> Int {
+        if currentQuestion != nil {
+            return currentQuestion!.answers.count
+        } else {
+            return 0
+        }
     }
 }

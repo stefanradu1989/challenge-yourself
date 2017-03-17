@@ -13,6 +13,7 @@ class LeaderboardViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet weak var currentUserRank: UILabel!
     @IBOutlet weak var currentUserName: UILabel!
     @IBOutlet weak var currentUserScore: UILabel!
+    @IBOutlet weak var currentUserPhoto: UIImageView!
     
     @IBOutlet weak var tableView: UITableView!
 
@@ -28,6 +29,13 @@ class LeaderboardViewController: UIViewController, UITableViewDataSource, UITabl
         super.viewWillAppear(animated)
         DataManager.instance.addListener(listener: self)
         NetworkAssistant.instance.getLeaderboardUsers()
+        
+        let currentUser = DataManager.instance.getCurrentUser()
+        let rankSuffix: String = ParseUtils.getOrdinalSuffix(count: currentUser.rank)
+        currentUserName.text = currentUser.name
+        currentUserRank.text = "\(currentUser.rank)\(rankSuffix)"
+        currentUserScore.text = "\(currentUser.score)pts"
+//        currentUserPhoto.image = DataManager.instance.getLeaderboardUserIcon(id: currentUser.id, imageUrl: DataManager.instance.getLeaderboardUser(id: currentUser.id).iconUrl)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -40,6 +48,8 @@ class LeaderboardViewController: UIViewController, UITableViewDataSource, UITabl
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - Table View Data Source
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return DataManager.instance.leaderboardUsersCount
@@ -60,8 +70,6 @@ class LeaderboardViewController: UIViewController, UITableViewDataSource, UITabl
         
         return cell
     }
-    
-    
 
     /*
     // MARK: - Navigation
@@ -74,14 +82,6 @@ class LeaderboardViewController: UIViewController, UITableViewDataSource, UITabl
     */
 
     // MARK: - DataManagerListener
-    
-    func didReceiveDisciplines() {
-        
-    }
-    
-    func didLoadDisciplineIcon(disciplineId: Int) {
-        
-    }
     
     func didReceiveLeaderboardUsers() {
         tableView.reloadData()

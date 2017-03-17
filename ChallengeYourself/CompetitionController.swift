@@ -13,10 +13,18 @@ protocol CompetitionTitleDelegate: class {
     
 }
 
-class CompetitionController: UIViewController, UITableViewDelegate, UITableViewDataSource, DatamanagerListener, CompetitionTitleDelegate {
-    
+class CompetitionController: UIViewController, UITableViewDelegate, UITableViewDataSource, DatamanagerListener, CompetitionTitleDelegate, CompetitionCellDelegate {
+ 
     @IBOutlet weak var startCompetitionButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
+    
+    struct DisciplineSelection {
+        var easy: Bool
+        var medium: Bool
+        var hard: Bool
+    }
+    
+    var difficultySelection: [DisciplineSelection] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +42,8 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        tableView.reloadData()
+        
         DataManager.instance.addListener(listener: self)
         NetworkAssistant.instance.getDisciplines()
         
@@ -52,7 +62,6 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
 
     // MARK: - Table view data source
 
-    
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -76,13 +85,20 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
         cell.titleLabel.text = discipline.name
         cell.titleImage.image = DataManager.instance.getDisciplineIcon(id: discipline.id, imageUrl: discipline.iconUrl)
         
+        cell.delegate = self
+        
         cell.setButtonsTextColor(color: disciplineColor)
         cell.setButtonsBackgroundColor(color: disciplineColor)
+        
+        let selectedDifficulties: DisciplineSelection = difficultySelection[indexPath.row]
+        
+        cell.setEasyButtonValue(selected: selectedDifficulties.easy)
+        cell.setMediumButtonValue(selected: selectedDifficulties.medium)
+        cell.setHardButtonValue(selected: selectedDifficulties.hard)
         
         return cell
     }
  
-
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -137,14 +153,98 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
         
         lastClickedCell = indexPath.row
     }
-
+    
     func getTitle(for controller: UIViewController) -> String {
         return "\(lastClickedCell)"
+    }
+    
+    // MARK: - CompetitionCellDelegate
+    
+    func cellDidUpdateDifficultySelection(cell: CompetitionCell, difficulty: String, selected: Bool) {
+        let cellIndex = tableView.indexPath(for: cell)
+        switch difficulty {
+        case "easy":
+            difficultySelection[cellIndex!.row].easy = selected
+        case "medium":
+            difficultySelection[cellIndex!.row].medium = selected
+        case "hard":
+            difficultySelection[cellIndex!.row].hard = selected
+        default:
+            print("Difficulty not received")
+        }
+        updateStartButtonState()
+    }
+    
+    func updateStartButtonState() {
+        let enableButton = difficultySelection.reduce(false) { (result, item) -> Bool in
+            return result || item.easy || item.medium || item.hard
+        }
+        
+        startCompetitionButton.isEnabled = enableButton
+    }
+    
+    // MARK: - Send data to AnswerQuestionController
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        if let navController = segue.destination as? UINavigationController {
+            if let answerQuestionController = navController.topViewController as? AnswerQuestionController {
+                answerQuestionController.selectData = createSelectionData()
+            }
+        }
+    }
+    
+    func createSelectionData() -> [Dictionary<String , String>] {
+        var easySelection : [Int] = []
+        var mediumSelection : [Int] = []
+        var hardSelection : [Int] = []
+        var disciplineId: Int = 1
+        
+        var easyDictionary : Dictionary<String , String> = [String : String]()
+        var mediumDictionary : Dictionary<String , String> = [String : String]()
+        var hardDictionary : Dictionary<String , String> = [String : String]()
+        
+        var selectData : [Dictionary<String , String>] = []
+        
+        for selection in difficultySelection {
+            if selection.easy {
+                easySelection.append(disciplineId)
+            }
+            if selection.medium {
+                mediumSelection.append(disciplineId)
+            }
+            if selection.hard {
+                hardSelection.append(disciplineId)
+            }
+            disciplineId += 1
+        }
+        
+        if !easySelection.isEmpty {
+            easyDictionary["difficulty"] = "easy"
+            easyDictionary["disciplineIdList"] = ParseUtils.transformIntArrayToString(array: easySelection, element: ",")
+            selectData.append(easyDictionary)
+        }
+        if !mediumSelection.isEmpty {
+            mediumDictionary["difficulty"] = "medium"
+            mediumDictionary["disciplineIdList"] = ParseUtils.transformIntArrayToString(array: mediumSelection, element: ",")
+            selectData.append(mediumDictionary)
+        }
+        if !hardSelection.isEmpty {
+            hardDictionary["difficulty"] = "hard"
+            hardDictionary["disciplineIdList"] = ParseUtils.transformIntArrayToString(array: hardSelection, element: ",")
+            selectData.append(hardDictionary)
+        }
+        
+        return selectData
     }
     
     // MARK: - DataManagerListener
     
     func didReceiveDisciplines() {
+        difficultySelection = []
+        for _ in DataManager.instance.disciplineList {
+            difficultySelection.append(DisciplineSelection(easy: false, medium: false, hard: false))
+        }
         tableView.reloadData()
     }
     
@@ -162,13 +262,5 @@ class CompetitionController: UIViewController, UITableViewDelegate, UITableViewD
                 }
             }
         }
-    }
-    
-    func didReceiveLeaderboardUsers() {
-        
-    }
-    
-    func didLoadLeaderboardUserIcon(leaderboardUserId: Int) {
-        
     }
 }

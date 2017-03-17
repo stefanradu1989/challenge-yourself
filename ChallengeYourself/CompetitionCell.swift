@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol CompetitionCellDelegate: class {
+    func cellDidUpdateDifficultySelection(cell: CompetitionCell, difficulty: String, selected: Bool)
+}
+
 class CompetitionCell: UITableViewCell {
 
     @IBOutlet weak var titleImage: UIImageView!
@@ -17,6 +21,8 @@ class CompetitionCell: UITableViewCell {
     @IBOutlet weak var hardButton: UIButton!
     
     var defaultButtonColor = UIColor .orange
+    
+    weak var delegate: CompetitionCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,57 +34,77 @@ class CompetitionCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        easyButton.setTitleColor(defaultButtonColor, for: .normal)
-        mediumButton.setTitleColor(defaultButtonColor, for: .normal)
-        hardButton.setTitleColor(defaultButtonColor, for: .normal)
-        
-        easyButton.backgroundColor = UIColor .white
-        mediumButton.backgroundColor = UIColor .white
-        hardButton.backgroundColor = UIColor .white
+    // MARK: - Difficulty Buttons Actions
+    
+    @IBAction func selectDifficultyEasy(_ sender: UIButton) {
+        if sender.backgroundColor == UIColor.white {
+            setEasyButtonValue(selected: true)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "easy", selected: true)
+        } else {
+            setEasyButtonValue(selected: false)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "easy", selected: false)
+        }
     }
+    
+    @IBAction func selectDifficultyMedium(_ sender: UIButton) {
+        if sender.backgroundColor == UIColor.white {
+            setMediumButtonValue(selected: true)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "medium", selected: true)
+        } else {
+            setMediumButtonValue(selected: false)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "medium", selected: false)
+        }
+    }
+    
+    @IBAction func selectDifficultyHard(_ sender: UIButton) {
+        if sender.backgroundColor == UIColor.white {
+            setHardButtonValue(selected: true)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "hard", selected: true)
+        } else {
+            setHardButtonValue(selected: false)
+            delegate?.cellDidUpdateDifficultySelection(cell: self, difficulty: "hard", selected: false)
+        }
+    }
+    
+    // MARK: - Setters
     
     func setButtonsBackgroundColor(color: UIColor){
         defaultButtonColor = color
     }
     
     func setButtonsTextColor(color: UIColor) {
-
         easyButton.setTitleColor(color, for: .normal)
         mediumButton.setTitleColor(color, for: .normal)
         hardButton.setTitleColor(color, for: .normal)
-        
     }
     
-    @IBAction func selectDifficultyEasy(_ sender: UIButton) {
-        if sender.backgroundColor == UIColor.white {
-            sender.backgroundColor = defaultButtonColor
-            sender.setTitleColor(UIColor .white, for: UIControlState.normal)
+    func setEasyButtonValue(selected: Bool) {
+        if selected{
+            easyButton.backgroundColor = titleLabel.textColor
+            easyButton.setTitleColor(UIColor .white, for: UIControlState.normal)
         } else {
-            sender.backgroundColor = UIColor.white
-            sender.setTitleColor(defaultButtonColor, for: UIControlState.normal)
+            easyButton.backgroundColor = UIColor .white
+            easyButton.setTitleColor(titleLabel.textColor, for: UIControlState.normal)
         }
     }
     
-    @IBAction func selectDifficultyMedium(_ sender: UIButton) {
-        if sender.backgroundColor == UIColor.white {
-            sender.backgroundColor = defaultButtonColor
-            sender.setTitleColor(UIColor .white, for: UIControlState.normal)
+    func setMediumButtonValue(selected: Bool) {
+        if selected{
+            mediumButton.backgroundColor = titleLabel.textColor
+            mediumButton.setTitleColor(UIColor .white, for: UIControlState.normal)
         } else {
-            sender.backgroundColor = UIColor.white
-            sender.setTitleColor(defaultButtonColor, for: UIControlState.normal)
+            mediumButton.backgroundColor = UIColor .white
+            mediumButton.setTitleColor(titleLabel.textColor, for: UIControlState.normal)
         }
     }
     
-    @IBAction func selectDifficultyHard(_ sender: UIButton) {
-        
-        if sender.backgroundColor == UIColor.white {
-            sender.backgroundColor = defaultButtonColor
-            sender.setTitleColor(UIColor .white, for: UIControlState.normal)
+    func setHardButtonValue(selected: Bool) {
+        if selected{
+            hardButton.backgroundColor = titleLabel.textColor
+            hardButton.setTitleColor(UIColor .white, for: UIControlState.normal)
         } else {
-            sender.backgroundColor = UIColor.white
-            sender.setTitleColor(defaultButtonColor, for: UIControlState.normal)
+            hardButton.backgroundColor = UIColor .white
+            hardButton.setTitleColor(titleLabel.textColor, for: UIControlState.normal)
         }
     }
 }

@@ -11,11 +11,11 @@ import UIKit
 @IBDesignable
 class GradientView: UIView {
     
-    @IBInspectable var startColor:   UIColor = .white { didSet { updateColors() }}
-    @IBInspectable var midColor:     UIColor = .orange { didSet { updateColors() }}
-    @IBInspectable var endColor:     UIColor = .white { didSet { updateColors() }}
+    @IBInspectable var startColor:   UIColor = ColorUtils.hexStringToUIColor(hex: "#ffad33") { didSet { updateColors() }}
+//    @IBInspectable var midColor:     UIColor = .orange { didSet { updateColors() }}
+    @IBInspectable var endColor:     UIColor = ColorUtils.hexStringToUIColor(hex: "#cc7a00") { didSet { updateColors() }}
     @IBInspectable var startLocation: Double =   0.05 { didSet { updateLocations() }}
-    @IBInspectable var midLocation:   Double =   0.55 { didSet { updateLocations() }}
+//    @IBInspectable var midLocation:   Double =   0.55 { didSet { updateLocations() }}
     @IBInspectable var endLocation:   Double =   0.95 { didSet { updateLocations() }}
     @IBInspectable var horizontalMode:  Bool =  false { didSet { updatePoints() }}
     @IBInspectable var diagonalMode:    Bool =  false { didSet { updatePoints() }}
@@ -34,15 +34,15 @@ class GradientView: UIView {
         }
     }
     func updateLocations() {
-        gradientLayer.locations = [startLocation as NSNumber, midLocation as NSNumber, endLocation as NSNumber]
+        gradientLayer.locations = [startLocation as NSNumber, endLocation as NSNumber] //, midLocation as NSNumber
     }
     func updateColors() {
-        gradientLayer.colors    = [startColor.cgColor, midColor.cgColor, endColor.cgColor]
+        gradientLayer.colors    = [startColor.cgColor, endColor.cgColor] //, midColor.cgColor
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        updatePoints()
+        updatePoints()
         updateLocations()
         updateColors()
     }
